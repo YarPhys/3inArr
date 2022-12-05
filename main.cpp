@@ -12,7 +12,7 @@ using namespace sf;
 int ts = 100;
 Vector2i offset(81, 26); // Положение плашек
 int score = 0;
-int flag = 0;
+bool flag = true;
 
 int main() {
         srand(time(0));
@@ -69,12 +69,7 @@ int main() {
             if (click == 2) {
                 x = pos.x / ts + 1;
                 y = pos.y / ts + 1;
-                int summ=0;
-                for (int i = 1; i <= a; i++)
-                    for (int j = 1; j <= a; j++) {
-                        summ += grid[i][j].match;
-                    }
-                if (summ == 0) score -= 1000;
+                score -= 400;
                 if (abs(x - x0) + abs(y - y0) == 1) {
                     swap(grid[y0][x0], grid[y][x]);
                     isSwap = 1;
@@ -135,6 +130,11 @@ int main() {
             if (isSwap && !isMoving) {
                 if (!score) swap(grid[y0][x0], grid[y][x]);
                 isSwap = 0;
+            }
+
+            //if score < 0 => Game Over
+            if (score < 0) {
+                app.close();
             }
 
             //Обновить сетку
