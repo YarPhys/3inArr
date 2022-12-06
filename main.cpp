@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include <time.h>
 #include <SFML/Audio/Sound.hpp>
+#include <ctime>
 #include "Game.h"
 #include "Score.h"
 #include "Field.h"
@@ -31,7 +31,7 @@ int main() {
 
         for (int i = 1; i <= a; i++)
             for (int j = 1; j <= a; j++) {
-                grid[i][j].kind = rand() % 6;
+                grid[i][j].kind = rand() % 20;
                 grid[i][j].col = j;
                 grid[i][j].row = i;
                 grid[i][j].x = j * ts;

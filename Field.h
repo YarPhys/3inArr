@@ -10,12 +10,42 @@ public:
         for (int i = 1; i <= a; i++)
             for (int j = 1; j <= a; j++) {
                 if (grid[i][j].kind == grid[i + 1][j].kind)
-                    if (grid[i][j].kind == grid[i - 1][j].kind)
-                        for (int n = -1; n <= 1; n++) grid[i + n][j].match++;
+                    if ((grid[i][j].kind == grid[i - 1][j].kind) or (grid[i - 1][j].kind == 19))
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i + n][j].match++;
+                            if (grid[i-1][j].kind == 19)
+                                for (int m = -1; m <= 1; m++) grid[i+n][j+m].match=1;
+                        }
+                if (grid[i][j].kind == grid[i + 1][j].kind)
+                    if ((grid[i][j].kind == grid[i - 1][j].kind) or (grid[i + 1][j].kind == 19))
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i + n][j].match++;
+                            if (grid[i+1][j].kind == 19)
+                                for (int m = -1; m <= 1; m++) grid[i+n][j+m].match=1;
+                        }
+                if ((grid[i-1][j].kind == grid[i + 1][j].kind) and (grid[i][j].kind == 19))
+                        for (int n = -1; n <= 1; n++)
+                            for(int m = -1; m <= 1; m++)
+                                grid[i + n][j + m].match++;
 
                 if (grid[i][j].kind == grid[i][j + 1].kind)
-                    if (grid[i][j].kind == grid[i][j - 1].kind)
-                        for (int n = -1; n <= 1; n++) grid[i][j + n].match++;
+                    if ((grid[i][j].kind == grid[i][j - 1].kind) or (grid[i][j + 1].kind == 19))
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i][j+n].match++;
+                            if (grid[i][j + 1].kind == 19)
+                                for (int m = -1; m <= 1; m++) grid[i+m][j+n].match=1;
+                        }
+                if (grid[i][j].kind == grid[i][j + 1].kind)
+                    if ((grid[i][j].kind == grid[i][j - 1].kind) or (grid[i][j - 1].kind == 19))
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i][j+n].match++;
+                            if (grid[i][j - 1].kind == 19)
+                                for (int m = -1; m <= 1; m++) grid[i+m][j+n].match=1;
+                        }
+                if ((grid[i][j - 1].kind == grid[i][j + 1].kind) and (grid[i][j].kind == 19))
+                    for (int n = -1; n <= 1; n++)
+                        for(int m = -1; m <= 1; m++)
+                            grid[i + n][j + m].match++;
             }
     }
 
@@ -40,11 +70,22 @@ public:
         if (!isMoving)
             for (int i = 1; i <= a; i++)
                 for (int j = 1; j <= a; j++)
-                    if (grid[i][j].match)
-                        if (grid[i][j].alpha > 10) {
-                            grid[i][j].alpha -= 10;
-                            isMoving = true;
+                    if (grid[i][j].match) {
+                        if (grid[i][j].kind == 19) {
+                            for (int n = -1; n <= 1; n++) {
+                                for (int m = -1; m <= 1; m++) {
+                                    if (grid[i + n][j + m].alpha > 10) {
+                                        grid[i + n][j + m].alpha -= 10;
+                                        isMoving = true;
+                                    }
+                                }
+                            }
                         }
+                        if (grid[i][j].alpha > 10) {
+                                grid[i][j].alpha -= 10;
+                                isMoving = true;
+                        }
+                    }
         return isMoving;
     }
 
