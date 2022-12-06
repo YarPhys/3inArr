@@ -3,20 +3,19 @@
 #include <SFML/Audio/Sound.hpp>
 #include "Game.h"
 #include "Score.h"
+#include "Field.h"
 
-using namespace std;
 using namespace sf;
 
 int ts = 100;
-int score = 0;
 Vector2i offset(81, 26); // Положение плашек
 bool flag = true;
 Score score1 = Score();
+Field field = Field();
 
 int main() {
         srand(time(0));
         int a = 6;
-
         app.setFramerateLimit(60);
 
 //        sf::SoundBuffer buffer;
@@ -25,10 +24,9 @@ int main() {
 //        sound.setBuffer(buffer);
 //        sound.play();
 
-        Texture t1, t2, t3;
+        Texture t1, t2;
         t1.loadFromFile("C:/background.png");
         t2.loadFromFile("C:/gem.png");
-
         Sprite background(t1), gems(t2);
 
         for (int i = 1; i <= a; i++)
@@ -77,42 +75,13 @@ int main() {
             }
 
             //Поиск совпадений
-            for (int i = 1; i <= a; i++)
-                for (int j = 1; j <= a; j++) {
-                    if (grid[i][j].kind == grid[i + 1][j].kind)
-                        if (grid[i][j].kind == grid[i - 1][j].kind)
-                            for (int n = -1; n <= 1; n++) grid[i + n][j].match++;
+            field.search_coincidence(a);
 
-                    if (grid[i][j].kind == grid[i][j + 1].kind)
-                        if (grid[i][j].kind == grid[i][j - 1].kind)
-                            for (int n = -1; n <= 1; n++) grid[i][j + n].match++;
-                }
+            //Анимация движения
+            isMoving = field.animation_move(a, ts, isMoving);
 
-            //Анимация
-            isMoving = false;
-            for (int i = 1; i <= a; i++)
-                for (int j = 1; j <= a; j++) {
-                    piece &p = grid[i][j];
-                    int dx, dy;
-                    for (int n = 0; n < 5; n++)   //Скорость
-                    {
-                        dx = p.x - p.col * ts;
-                        dy = p.y - p.row * ts;
-                        if (dx) p.x -= dx / abs(dx);
-                        if (dy) p.y -= dy / abs(dy);
-                    }
-                    if (dx || dy) isMoving = 1;
-                }
-
-            //Удаление анимации
-            if (!isMoving)
-                for (int i = 1; i <= a; i++)
-                    for (int j = 1; j <= a; j++)
-                        if (grid[i][j].match)
-                            if (grid[i][j].alpha > 10) {
-                                grid[i][j].alpha -= 10;
-                                isMoving = true;
-                            }
+            //Анимация удаления
+            isMoving = field.animation_delete(a, isMoving);
 
             //Получить счет
             sf::Text TStore;
@@ -120,7 +89,7 @@ int main() {
 
             //Второй обмен, если нет совпадения
             if (isSwap && !isMoving) {
-                if (!score) swap(grid[y0][x0], grid[y][x]);
+                if (!flag) swap(grid[y0][x0], grid[y][x]);
                 isSwap = 0;
             }
 
@@ -128,26 +97,9 @@ int main() {
             score1.GameOver();
 
             //Обновить сетку
-            if (!isMoving) {
-                for (int i = a; i > 0; i--)
-                    for (int j = 1; j <= a; j++)
-                        if (grid[i][j].match)
-                            for (int n = i; n > 0; n--)
-                                if (!grid[n][j].match) {
-                                    swap(grid[n][j], grid[i][j]);
-                                    break;
-                                };
+            field.update_grid(a, ts, isMoving);
 
-                for (int j = 1; j <= a; j++)
-                    for (int i = a, n = 0; i > 0; i--)
-                        if (grid[i][j].match) {
-                            grid[i][j].kind = rand() % 4;
-                            grid[i][j].y = -ts * n++;
-                            grid[i][j].match = 0;
-                            grid[i][j].alpha = 255;
-                        }
-            }
-
+            //Отрисовать фон
             app.draw(background);
 
             ///ОТРИСУЕМ ПЛАШКИ///

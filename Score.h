@@ -8,6 +8,7 @@
 class Score final{
 private:
     int score;
+    int max;
 
 public:
     Score(): score(400) { }
@@ -16,6 +17,9 @@ public:
         for (int i = 1; i <= a; i++)
             for (int j = 1; j <= a; j++)
                 score += grid[i][j].match / 10;
+        if (score > max) {
+            max = score;
+        }
         sf::Font fnt; //переменная шрифта
         fnt.loadFromFile("C:/Windows/Fonts/STENCIL.TTF");
         std::ostringstream scoreStr;
