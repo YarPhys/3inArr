@@ -110,6 +110,18 @@ public:
                     }
         }
     }
+
+    void draw_grid(int a, int ts, sf::Sprite gems, sf::Vector2i offset) {
+        for (int i = 1; i <= a; i++)
+            for (int j = 1; j <= a; j++) {
+                piece p = grid[i][j];
+                gems.setTextureRect(sf::IntRect(p.kind * 100, 0, 99, 99));
+                gems.setColor(sf::Color(255, 255, 255, p.alpha));
+                gems.setPosition(p.x, p.y);
+                gems.move(offset.x - ts, offset.y - ts);
+                app.draw(gems);
+            }
+    }
 };
 #ifndef AAAAAAAA_FIELD_H
 #define AAAAAAAA_FIELD_H

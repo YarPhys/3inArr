@@ -11,7 +11,7 @@ private:
     int max;
 
 public:
-    Score(): score(4000) { }
+    Score(): score(300) { }
 
     sf::Text get_score(int a){
         for (int i = 1; i <= a; i++)
@@ -31,7 +31,7 @@ public:
     }
 
     int losing_scores() {
-        score -= 400;
+        score -= 300;
     }
 
     void GameOver() {
