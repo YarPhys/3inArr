@@ -1,23 +1,22 @@
-#include <sstream>
 #include <SFML/Graphics.hpp>
 #include <time.h>
-#include "wtypes.h"
-#include <iostream>
 #include <SFML/Audio/Sound.hpp>
 #include "Game.h"
+#include "Score.h"
 
 using namespace std;
 using namespace sf;
 
 int ts = 100;
-Vector2i offset(81, 26); // Положение плашек
 int score = 0;
+Vector2i offset(81, 26); // Положение плашек
 bool flag = true;
+Score score1 = Score();
 
 int main() {
         srand(time(0));
         int a = 6;
-        RenderWindow app(VideoMode(1280, 720), "3 in arrow");
+
         app.setFramerateLimit(60);
 
 //        sf::SoundBuffer buffer;
@@ -69,7 +68,7 @@ int main() {
             if (click == 2) {
                 x = pos.x / ts + 1;
                 y = pos.y / ts + 1;
-                score -= 400;
+                score1.losing_scores(); // score -= 400
                 if (abs(x - x0) + abs(y - y0) == 1) {
                     swap(grid[y0][x0], grid[y][x]);
                     isSwap = 1;
@@ -116,15 +115,8 @@ int main() {
                             }
 
             //Получить счет
-            for (int i = 1; i <= a; i++)
-                for (int j = 1; j <= a; j++)
-                    score += grid[i][j].match / 10;
-            Font fnt; //переменная шрифта
-            fnt.loadFromFile("C:/Windows/Fonts/STENCIL.TTF");
-            std::ostringstream scoreStr;
-            scoreStr << score;
-            Text TStore(scoreStr.str(), fnt, 20); //Текст|Шрифт|Размер Символа
-            TStore.setPosition(10, 10);//позиция на экране
+            sf::Text TStore;
+            TStore = score1.get_score(a);
 
             //Второй обмен, если нет совпадения
             if (isSwap && !isMoving) {
@@ -133,9 +125,7 @@ int main() {
             }
 
             //if score < 0 => Game Over
-            if (score < 0) {
-                app.close();
-            }
+            score1.GameOver();
 
             //Обновить сетку
             if (!isMoving) {
@@ -171,7 +161,7 @@ int main() {
                     app.draw(gems);
 
                 }
-            app.draw(TStore); // рисовает поверх всех элементов
+
             app.display();
         }
     return EXIT_SUCCESS;
