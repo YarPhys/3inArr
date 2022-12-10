@@ -7,6 +7,12 @@ sf::RenderWindow app(sf::VideoMode(1280, 720), "3 in arrow");
 int ts = 100;
 sf::Vector2i offset(81, 26); // Положение плашек
 bool flag = true;
+
+int x0, y0, x, y;
+int click = 0;
+sf::Vector2i pos;
+bool isSwap = false, isMoving = false;
+
 struct piece
 {
     int x, y, col, row, kind, match, alpha;
