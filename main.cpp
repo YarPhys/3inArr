@@ -4,13 +4,15 @@
 #include "Game.h"
 #include "Score.h"
 #include "Field.h"
+#include "Control.h"
 
 Score score1 = Score();
 Field field = Field();
+Control control = Control();
 
 int main() {
         srand(time(0));
-        int a = 6;
+        int a = 8;
         app.setFramerateLimit(60);
 
 //        sf::SoundBuffer buffer;
@@ -39,34 +41,13 @@ int main() {
         bool isSwap = false, isMoving = false;
 
         while (app.isOpen()) {
-            sf::Event e;
-            while (app.pollEvent(e)) {
-                if (e.type == sf::Event::Closed) {
-                    app.close();
-                }
+            // Закрытие приложения и проверка нажатия кнопки мыши
+            control.mouse_event(click, isSwap, isMoving, pos);
 
-                if (e.type == sf::Event::MouseButtonPressed)
-                    if (e.key.code == sf::Mouse::Left) {
-                        if (!isSwap && !isMoving) click++;
-                        pos = sf::Mouse::getPosition(app) - offset;
-                    }
-            }
             app.clear();
+
             // Управление мышью
-            if (click == 1) {
-                x0 = pos.x / ts + 1;
-                y0 = pos.y / ts + 1;
-            }
-            if (click == 2) {
-                x = pos.x / ts + 1;
-                y = pos.y / ts + 1;
-                score1.losing_scores(); // score -= 400
-                if (abs(x - x0) + abs(y - y0) == 1) {
-                    swap(grid[y0][x0], grid[y][x]);
-                    isSwap = 1;
-                    click = 0;
-                } else click = 1;
-            }
+            control.click(x0, y0, x, y, ts, score1, click, isSwap, isMoving, pos, offset);
 
             //Поиск совпадений
             field.search_coincidence(a);

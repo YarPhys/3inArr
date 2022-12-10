@@ -11,7 +11,7 @@ private:
     int max;
 
 public:
-    Score(): score(300) { }
+    Score(): score(3000) { }
 
     sf::Text get_score(int a){
         for (int i = 1; i <= a; i++)
